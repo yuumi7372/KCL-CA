@@ -15,3 +15,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app); // データベース（Firestore）
 export const auth = getAuth(app);   // ログイン機能（Auth）
+
+console.log("firebase config", {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+});

@@ -1,17 +1,25 @@
-import { initializeApp, cert, getApps } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
+// utils/firebase/server.ts
+import * as admin from "firebase-admin";
 
-const serviceAccount = JSON.parse(
-  process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string
-);
+let app: admin.app.App | null = null;
 
-if (!getApps().length) {
-  initializeApp({
-    credential: cert(serviceAccount),
+function getAdminApp() {
+  if (app) return app;
+
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+  if (!raw) {
+    throw new Error("FIREBASE_SERVICE_ACCOUNT_KEY is missing");
+  }
+
+  const serviceAccount = JSON.parse(raw);
+
+  app = admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
   });
+
+  return app;
 }
 
-export const auth = getAuth();
-export const createClient = () => {
-  return getAuth();
-};
+export function getAuth() {
+  return getAdminApp().auth();
+}

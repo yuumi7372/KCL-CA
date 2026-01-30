@@ -11,6 +11,7 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 import { db } from '@/firebase';
+import { getAuth } from "@/utils/firebase/server";
 
 // --- GET: 取引先一覧の取得 ---
 export async function GET(request: Request) {
@@ -44,6 +45,8 @@ export async function GET(request: Request) {
 
 // --- POST: 取引先の新規登録 ---
 export async function POST(request: Request) {
+  const auth = getAuth();
+  // signout 処理
   try {
     const body = await request.json();
     const { name, address, phone_number, email } = body;

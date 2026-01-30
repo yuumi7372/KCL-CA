@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getFirestore } from "@/utils/firebase/server";
+import { adminDb } from "@/utils/firebase/server";
 import { Timestamp } from "firebase-admin/firestore";
 
 
@@ -29,9 +29,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const db = getFirestore();
     // Firestoreの "eggs" コレクションに保存
-    const docRef = await db.collection("eggs").add({
+    const docRef = await adminDb.collection("eggs").add({
       coop_number: coopNumberInt,
       count: countInt,
       date: Timestamp.now(),
@@ -53,9 +52,8 @@ export async function POST(request: Request) {
 // --- GET: 卵の記録一覧を取得 ---
 export async function GET() {
   try {
-    const db = getFirestore();
 
-    const snapshot = await db
+    const snapshot = await adminDb
       .collection("eggs")
       .orderBy("date", "desc")
       .get();

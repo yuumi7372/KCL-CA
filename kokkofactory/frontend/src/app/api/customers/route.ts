@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { getFirestore } from "@/utils/firebase/server";
-import { getAuth } from "@/utils/firebase/server";
+import { adminDb } from "@/utils/firebase/server";
+
 
 
 // --- GET ---
 export async function GET() {
   try {
-    const db = getFirestore();
-    const snapshot = await db.collection("customers").get();
+    
+    const snapshot = await adminDb.collection("customers").get();
 
     const customers = snapshot.docs.map(doc => ({
       id: doc.id,
@@ -24,7 +24,7 @@ export async function GET() {
 // --- POST ---
 export async function POST(request: Request) {
   try {
-    const db = getFirestore();
+
     const body = await request.json();
     const { name, address, phone_number, email } = body;
 
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Customer name is required" }, { status: 400 });
     }
 
-    const ref = db.collection("customers").doc(name);
+    const ref = adminDb.collection("customers").doc(name);
     const snap = await ref.get();
 
     if (snap.exists) {
@@ -57,14 +57,14 @@ export async function POST(request: Request) {
 // --- DELETE ---
 export async function DELETE(request: Request) {
   try {
-    const db = getFirestore();
+   
     const { id } = await request.json();
 
     if (!id) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
 
-    const ref = db.collection("customers").doc(id);
+    const ref = adminDb.collection("customers").doc(id);
     const snap = await ref.get();
 
     if (!snap.exists) {

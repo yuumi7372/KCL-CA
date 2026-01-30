@@ -1,12 +1,14 @@
-import * as admin from 'firebase-admin';
-import serviceAccount from '../../../serviceAccountKey.json'; // 相対パスでインポート
+import { initializeApp, cert, getApps } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+const serviceAccount = JSON.parse(
+  process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string
+);
+
+if (!getApps().length) {
+  initializeApp({
+    credential: cert(serviceAccount),
   });
 }
 
-export const createClient = () => {
-  return admin.auth();
-};
+export const auth = getAuth();

@@ -1,21 +1,17 @@
-import { createClient } from "@/utils/firebase/server";
-import { revalidatePath } from "next/cache";
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient();
-
-  // ログインしているかの確認
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (user) {
-    await supabase.auth.signOut();
-  }
-
-  revalidatePath("/", "layout");
-  return NextResponse.redirect(new URL("/", req.url), {
+  const response = NextResponse.redirect(new URL("/", req.url), {
     status: 302,
   });
+
+  // Firebase セッションCookieを削除
+  response.cookies.set("session", "", {
+    httpOnly: true,
+    secure: true,
+    path: "/",
+    maxAge: 0,
+  });
+
+  return response;
 }

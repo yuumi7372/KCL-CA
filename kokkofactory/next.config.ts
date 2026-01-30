@@ -27,10 +27,10 @@ const nextConfig: NextConfig = {
     return config;
   },
   // ⭐ Turbopack を無効化
-  experimental: {
+  /*experimental: {
     turbo: false,
   },
-  appDir: "src/app",
+  appDir: "src/app",*/
 };
 
 export default nextConfig;

@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
   experimental: {
     turbo: false,
   },
+  appDir: "src/app",
 };
 
 export default nextConfig;

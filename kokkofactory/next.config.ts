@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   
-  webpack(config, /*{ isServer }*/) {
+  webpack(config, { isServer }) {
     config.resolve = {
       ...config.resolve,
       alias: {
@@ -25,6 +25,10 @@ const nextConfig: NextConfig = {
     }
 
     return config;
+  },
+  // ⭐ Turbopack を無効化
+  experimental: {
+    turbo: false,
   },
 };
 

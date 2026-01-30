@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import { getFirestore, getAuth } from "@/utils/firebase/server";
+import { getFirestore } from "@/utils/firebase/server";
+import { getAuth } from "@/utils/firebase/server";
+
 
 // --- GET ---
 export async function GET() {

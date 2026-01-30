@@ -1,12 +1,5 @@
-import { NextResponse } from 'next/server';
-import { 
-  doc, 
-  getDoc, 
-  updateDoc, 
-  deleteDoc, 
-  serverTimestamp 
-} from 'firebase/firestore';
-import { db } from '@/firebase';
+import { NextResponse } from "next/server";
+import { adminDb, adminTimestamp } from "@/utils/firebase/server";
 
 // --- PUT: 特定の卵の記録を更新 ---
 export async function PUT(
@@ -14,21 +7,20 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = params.id; // FirestoreのドキュメントIDは文字列
+    const id = params.id;
     const data = await request.json();
     const { coop_number, count } = data;
 
     if (!id) {
       return NextResponse.json(
-        { message: '有効なIDが指定されていません。' },
+        { message: "有効なIDが指定されていません。" },
         { status: 400 }
       );
     }
 
-    // 必須フィールドのチェック
     if (coop_number === undefined || count === undefined) {
       return NextResponse.json(
-        { message: '鶏舎番号 (coop_number) と個数 (count) は必須です。' },
+        { message: "鶏舎番号と個数は必須です。" },
         { status: 400 }
       );
     }
@@ -36,41 +28,43 @@ export async function PUT(
     const coopNumberInt = Number(coop_number);
     const countInt = Number(count);
 
-    // バリデーション
-    if (isNaN(coopNumberInt) || isNaN(countInt) || coopNumberInt < 1 || coopNumberInt > 9 || countInt < 0) {
+    if (
+      isNaN(coopNumberInt) ||
+      isNaN(countInt) ||
+      coopNumberInt < 1 ||
+      coopNumberInt > 9 ||
+      countInt < 0
+    ) {
       return NextResponse.json(
-        { message: '鶏舎番号は1-9の整数、個数は0以上の整数である必要があります。' },
+        { message: "入力値が不正です。" },
         { status: 400 }
       );
     }
 
-    const eggRef = doc(db, 'eggs', id);
-    
-    // ドキュメントが存在するか確認
-    const docSnap = await getDoc(eggRef);
-    if (!docSnap.exists()) {
+    const eggRef = adminDb.collection("eggs").doc(id);
+    const docSnap = await eggRef.get();
+
+    if (!docSnap.exists) {
       return NextResponse.json(
         { message: `ID ${id} の卵の記録が見つかりませんでした。` },
         { status: 404 }
       );
     }
 
-    // 更新実行
-    await updateDoc(eggRef, {
+    await eggRef.update({
       coop_number: coopNumberInt,
       count: countInt,
-      updatedAt: serverTimestamp(), // 更新した時間を記録しておくと便利！
+      updatedAt: adminTimestamp.now(),
     });
 
     return NextResponse.json(
-      { message: `ID ${id} の卵の記録を正常に更新しました！` },
+      { message: `ID ${id} の卵の記録を更新しました！` },
       { status: 200 }
     );
-
   } catch (error) {
-    console.error('Firestore Eggデータ更新エラー:', error);
+    console.error("Firestore Egg更新エラー:", error);
     return NextResponse.json(
-      { message: 'サーバーエラーが発生しました。データの更新に失敗しました。' },
+      { message: "サーバーエラーが発生しました。" },
       { status: 500 }
     );
   }
@@ -86,33 +80,31 @@ export async function DELETE(
 
     if (!id) {
       return NextResponse.json(
-        { message: '有効なIDが指定されていません。' },
+        { message: "有効なIDが指定されていません。" },
         { status: 400 }
       );
     }
 
-    const eggRef = doc(db, 'eggs', id);
-    
-    // 存在確認
-    const docSnap = await getDoc(eggRef);
-    if (!docSnap.exists()) {
+    const eggRef = adminDb.collection("eggs").doc(id);
+    const docSnap = await eggRef.get();
+
+    if (!docSnap.exists) {
       return NextResponse.json(
-        { message: '削除対象の記録が見つかりませんでした。' },
+        { message: "削除対象の記録が見つかりませんでした。" },
         { status: 404 }
       );
     }
 
-    // 削除実行
-    await deleteDoc(eggRef);
+    await eggRef.delete();
 
     return NextResponse.json(
       { message: `ID ${id} の記録を削除しました。` },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Firestore Eggデータ削除エラー:', error);
+    console.error("Firestore Egg削除エラー:", error);
     return NextResponse.json(
-      { message: 'サーバーエラーが発生しました。削除に失敗しました。' },
+      { message: "サーバーエラーが発生しました。" },
       { status: 500 }
     );
   }

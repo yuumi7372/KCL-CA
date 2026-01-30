@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
-import { getFirestore, Timestamp } from "firebase-admin/firestore";
+import { adminDb, adminTimestamp } from "@/utils/firebase/server";
 
-const db = getFirestore();
 
 // ====================
 // GET: 在庫一覧取得
 // ====================
 export async function GET() {
   try {
-    const snapshot = await db.collectionGroup("inventory").get();
+    const snapshot = await adminDb.collectionGroup("inventory").get();
 
     const inventoryList = await Promise.all(
       snapshot.docs.map(async (stockDoc) => {
@@ -26,7 +25,7 @@ export async function GET() {
         // threshold
         let alertThreshold = 100;
         if (supplierRef) {
-          const thresholdSnap = await db
+          const thresholdSnap = await adminDb
             .collection("suppliers")
             .doc(supplierRef.id)
             .collection("settings")
@@ -83,7 +82,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const supplierRef = db.collection("suppliers").doc(supplierName);
+    const supplierRef = adminDb.collection("suppliers").doc(supplierName);
 
     // 仕入れ先 upsert
     await supplierRef.set(
@@ -119,7 +118,7 @@ export async function POST(request: Request) {
         .set(
           {
             alert_threshold: Number(alertThreshold),
-            updatedAt: Timestamp.now(),
+            updatedAt: adminTimestamp.now(),
           },
           { merge: true }
         );
@@ -153,7 +152,7 @@ export async function PATCH(request: Request) {
       );
     }
 
-    await db
+    await adminDb
       .collection("suppliers")
       .doc(supplierName)
       .collection("inventory")
@@ -190,14 +189,14 @@ export async function DELETE(request: Request) {
       );
     }
 
-    await db
+    await adminDb
       .collection("suppliers")
       .doc(supplierName)
       .collection("inventory")
       .doc(ItemName)
       .delete();
 
-    await db
+    await adminDb
       .collection("suppliers")
       .doc(supplierName)
       .collection("settings")

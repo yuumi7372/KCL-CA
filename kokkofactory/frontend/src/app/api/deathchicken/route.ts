@@ -1,7 +1,6 @@
+// frontend/src/app/api/deathchicken/route.ts
 import { NextResponse } from "next/server";
-import { getFirestore, Timestamp } from "firebase-admin/firestore";
-
-const db = getFirestore();
+import { adminDb, adminTimestamp } from "@/utils/firebase/server";
 
 // --- POST: 死亡記録の作成 ---
 export async function POST(request: Request) {
@@ -33,11 +32,11 @@ export async function POST(request: Request) {
     }
 
     // Firestoreの "dead_chickens" コレクションに保存
-    const docRef = await db.collection("dead_chickens").add({
+    const docRef = await adminDb.collection("dead_chickens").add({
       coop_number: coopNumberInt,
       count: countInt,
       cause_of_death,
-      date: Timestamp.now(),
+      date: adminTimestamp.now(),
     });
 
     return NextResponse.json(
@@ -56,7 +55,7 @@ export async function POST(request: Request) {
 // --- GET: 死亡記録の一覧取得 ---
 export async function GET() {
   try {
-    const snapshot = await db
+    const snapshot = await adminDb
       .collection("dead_chickens")
       .orderBy("date", "desc")
       .get();
@@ -105,7 +104,7 @@ export async function PUT(
         }
         
         // 存在確認
-        const deadChickenRef = db.collection("dead_chickens").doc(id);
+        const deadChickenRef = adminDb.collection("dead_chickens").doc(id);
         const docSnap = await deadChickenRef.get();
 
         if (!docSnap.exists) {
@@ -120,7 +119,7 @@ export async function PUT(
             coop_number: coopNumberInt,
             count: countInt,
             cause_of_death: cause_of_death,
-            updatedAt: Timestamp.now() // 更新時間も入れておくと便利！✨
+            updatedAt: adminTimestamp.now() // 更新時間も入れておくと便利！✨
         });
 
         return NextResponse.json(

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/utils/firebase/server";
-import { Timestamp } from "firebase-admin/firestore";
+import { adminTimestamp } from "@/utils/firebase/server";
+
 
 
 // --- POST: 卵の採取記録を保存 ---
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
     const docRef = await adminDb.collection("eggs").add({
       coop_number: coopNumberInt,
       count: countInt,
-      date: Timestamp.now(),
+      date: adminTimestamp.now(),
     });
 
     return NextResponse.json(

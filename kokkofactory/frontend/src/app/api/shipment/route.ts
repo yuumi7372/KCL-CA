@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { getFirestore, Timestamp } from "firebase-admin/firestore";
+import { adminDb, adminTimestamp } from "@/utils/firebase/server";
 
-const db = getFirestore();
+
 
 // ====================
 // GET: 出荷情報取得
@@ -14,14 +14,14 @@ export async function GET(request: Request) {
   try {
     // --- 1. 特定の取引先・特定の出荷 ---
     if (id && customerName) {
-      const shipmentRef = db
+      const shipmentRef = adminDb
         .collection("customers")
         .doc(customerName)
         .collection("shipments")
         .doc(id);
 
       const shipmentSnap = await shipmentRef.get();
-      const customerSnap = await db.collection("customers").doc(customerName).get();
+      const customerSnap = await adminDb.collection("customers").doc(customerName).get();
 
       if (!shipmentSnap.exists || !customerSnap.exists) {
         return NextResponse.json(
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
     }
 
     // --- 2. 全出荷情報（collectionGroup） ---
-    const snapshot = await db
+    const snapshot = await adminDb
       .collectionGroup("shipments")
       .orderBy("shipment_date", "desc")
       .get();
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const customerRef = db.collection("customers").doc(customerName);
+    const customerRef = adminDb.collection("customers").doc(customerName);
     const customerSnap = await customerRef.get();
 
     // 取引先がなければ作成（upsert）
@@ -115,7 +115,7 @@ export async function POST(request: Request) {
         phone_number: phone_number || null,
         email: email || null,
         address: address || null,
-        createdAt: Timestamp.now(),
+        createdAt: adminTimestamp.now(),
       });
     }
 
@@ -123,8 +123,8 @@ export async function POST(request: Request) {
     const shipmentRef = await customerRef.collection("shipments").add({
       shipped_count: Number(shipped_count),
       shipment_date: shipment_date
-        ? Timestamp.fromDate(new Date(shipment_date))
-        : Timestamp.now(),
+        ? adminTimestamp.fromDate(new Date(shipment_date))
+        : adminTimestamp.now(),
     });
 
     return NextResponse.json(

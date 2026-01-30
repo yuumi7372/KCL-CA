@@ -3,15 +3,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // 💡 ここから追加：ESLintのエラーを無視してビルドするよ！
-  eslint: {
+  /*eslint: {
     ignoreDuringBuilds: true,
-  },
+  },*/
   // 💡 ここから追加：TypeScriptの型エラーを無視してビルドするよ！
   typescript: {
     ignoreBuildErrors: true,
   },
   
-  webpack(config, { isServer }) {
+  webpack(config, /*{ isServer }*/) {
     config.resolve = {
       ...config.resolve,
       alias: {

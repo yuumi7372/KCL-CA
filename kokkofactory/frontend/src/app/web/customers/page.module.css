@@ -1,27 +1,63 @@
 
-.header {
+.buttonContainer {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-  justify-content: flex-start;
+  margin: 10px;
+  flex-direction: row;
+  justify-content: center;
+}
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px 10px 50px; /* 左に丸分のスペース確保 */
+  border-radius: 100px;
+  background-color: #ffffff; 
+  border: 3px solid transparent; /* 枠の太さ */
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  position: relative;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+}
+/* 左の黄色丸 */
+.button::after {
+  content: "";
+  position: absolute;
+  left: 3px;       /* 左端からの位置 */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fffc33, #ff9900);
+  /* 円形グラデーション: 中心に黄色、外側にオレンジ */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;      /* 文字より前面に */
 }
 
-.newButton {
-  padding: 8px 16px;
-  background-color: #ffcc00;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  text-decoration: none;
+.button:hover {
+  background-image: linear-gradient(90deg, #ffeb33, #ff9900), /* 内側を黄色っぽく */
+                    linear-gradient(90deg, #ffeb33, #ff9900); /* ボーダーはそのまま */
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* 押したとき */
+.button:active {
+  transform: translateY(2px); /* 少し下に押す */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* 影を小さく */
 }
 
 .searchForm {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr) auto auto;
+  display: flex;
+  grid-template-columns: repeat(4, 1fr) auto auto; /* ← 入力4枠 + ボタン2つ */
+  gap: 8px; /* ← 追加: 入力欄の間隔 */
   align-items: center;
   margin-bottom: 20px;
+  margin-top:10px;
   padding: 15px;
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -29,18 +65,22 @@
 }
 
 .searchInput {
+  flex: 1;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%; /* ← 入力欄を均等に広げる */
 }
 
 .searchButton,
 .clearButton {
-  padding: 5px 10px;
+  padding: 8px 12px; /* ← 少し余裕を持たせる */
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
+  color:#5D4037;
 }
 
 .searchButton {
@@ -49,6 +89,10 @@
 
 .clearButton {
   background-color: #f0f0f0;
+}
+
+.clearButton:hover {
+  background-color: #e0e0e0; /* ← hover時追加 */
 }
 
 .customerTable {
@@ -64,6 +108,7 @@
   padding: 12px;
   text-align: left;
   border-bottom: 2px solid #ddd;
+  color:#5D4037;
 }
 
 .tableRow {
@@ -77,10 +122,63 @@
 .tableRow td {
   padding: 12px;
   vertical-align: top;
+  color:#5D4037;
 }
 
 .deleteIcon {
   cursor: pointer;
   color: #a0a0a0;
   font-size: 1.2em;
+}
+
+/* 画面幅が600px以下のスマホ用 */
+@media (max-width: 600px) {
+  .buttonarea{
+    display: flex;
+    width: 50%;
+    justify-content: center;
+    margin: 10px;
+  }
+
+  .button {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px 10px 50px; /* 左に丸分のスペース確保 */
+    border-radius: 100px;
+    background-color: #ffffff; 
+    border: 3px solid transparent; /* 枠の太さ */
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    position: relative;
+    font-weight: bold;
+    font-size: 15px;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  /* テーブルの横スクロール用ラッパー */
+  .tableWrapper {
+    width: 100%;
+    overflow-x: auto;   /* 横スクロールを有効に */
+    -webkit-overflow-scrolling: touch; /* スマホでスムーズスクロール */
+  }
+
+  /* テーブル本体はそのまま */
+  .customerTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    margin-top: 10px;
+    min-width: 600px;  /* 横スクロールが必要な場合の最小幅 */
+  }
+
+  /* 既存のスタイルはそのまま */
+  .tableHeader { background-color: #f2f2f2; }
+  .tableHeader th { padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
+  .tableRow { border-bottom: 1px solid #eee; }
+  .tableRow:nth-child(even) { background-color: #fcfcfc; }
+  .tableRow td { padding: 12px; vertical-align: top; }
 }

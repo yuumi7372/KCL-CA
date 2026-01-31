@@ -1,4 +1,4 @@
-
+/*src/app/web/environment*/
 
 /* 鶏舎番号セレクター */
 .selector {
@@ -10,12 +10,14 @@
 
 .label {
   font-weight: bold;
+  color:#5D4037;
 }
 
 .select {
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 4px 12px;
+  color:#5D4037;
 }
 
 /* センサー情報カード */
@@ -34,6 +36,7 @@
 }
 
 .cardTitle {
+  color:#5D4037;
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 12px;
@@ -45,6 +48,7 @@
 }
 
 .cardUnit {
+  color:#5D4037;
   font-size: 16px;
 }
 
@@ -79,6 +83,7 @@
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 16px;
+  color:#5D4037;
 }
 
 .cameraImage {
@@ -89,4 +94,19 @@
   object-fit: cover;
   display: block;
   margin: 0 auto; /* 中央揃え */
+}
+
+/* 画面幅が600px以下のスマホ用 */
+@media (max-width: 600px) {
+  .cards{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  .cardValue {
+    font-size: 20px;
+    font-weight: bold;
+    color:#5D4037;
+  }
 }

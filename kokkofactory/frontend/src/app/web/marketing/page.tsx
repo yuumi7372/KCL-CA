@@ -204,6 +204,7 @@ export default function MarketingDashboard() {
   // --- Chart.js Options ---
   const options = {
     responsive: true,
+    maintainAspectRatio: false, // ← これ大事！！
     plugins: {
       legend: { position: "top" as const },
       title: { display: true, text: "販売チャネル別 出荷数/件数推移" },
@@ -280,15 +281,9 @@ export default function MarketingDashboard() {
             </div>
           </div>
 
-          <h2
-            style={{
-              textAlign: "center",
-              borderBottom: "2px solid #f0f0f0",
-              paddingBottom: "10px",
-            }}
-          >
+          <h3 className={styles.subHeading} style={{ marginTop: "20px" }}>
             販売チャネル別 集計 ({mockData.month})
-          </h2>
+          </h3>
           {/* 🔴 販売チャネル別テーブル */}
           <table className={styles.analysisTable}>
             <thead>
@@ -430,43 +425,46 @@ export default function MarketingDashboard() {
             </div>
 
             {/* 折れ線グラフ本体 */}
+            
             {shipments.length === 0 ? (
               <p>まだ分析データがありません！</p>
             ) : (
-              <DynamicLine
-                ref={chartRef}
-                data={{ labels, datasets }}
-                options={{
-                  ...options,
-                  plugins: {
-                    ...options.plugins,
-                    title: {
-                      display: true,
-                      text: `販売チャネル別 出荷数/件数推移 (${
-                        groupBy === "day"
-                          ? "日別"
-                          : groupBy === "month"
-                          ? "月別"
-                          : "年別"
-                      })`,
+              <div className={styles.lineChartWrapper}>
+                <DynamicLine
+                  ref={chartRef}
+                  data={{ labels, datasets }}
+                  options={{
+                    ...options,
+                    plugins: {
+                      ...options.plugins,
+                      title: {
+                        display: true,
+                        text: `販売チャネル別 出荷数/件数推移 (${
+                          groupBy === "day"
+                            ? "日別"
+                            : groupBy === "month"
+                            ? "月別"
+                            : "年別"
+                        })`,
+                      },
                     },
-                  },
-                }}
-                onClick={(e) => {
-                  if (!chartRef.current) return;
-                  const points = chartRef.current.getElementsAtEventForMode(
-                    e.nativeEvent,
-                    "nearest",
-                    { intersect: true },
-                    true
-                  );
-                  if (points.length > 0) {
-                    const idx = points[0].index;
-                    const key = sortedKeys[idx]; // 内部キーを保存
-                    setSelectedKey(key);
-                  }
-                }}
-              />
+                  }}
+                  onClick={(e) => {
+                    if (!chartRef.current) return;
+                    const points = chartRef.current.getElementsAtEventForMode(
+                      e.nativeEvent,
+                      "nearest",
+                      { intersect: true },
+                      true
+                    );
+                    if (points.length > 0) {
+                      const idx = points[0].index;
+                      const key = sortedKeys[idx]; // 内部キーを保存
+                      setSelectedKey(key);
+                    }
+                  }}
+                />
+              </div>
             )}
           </div>
 

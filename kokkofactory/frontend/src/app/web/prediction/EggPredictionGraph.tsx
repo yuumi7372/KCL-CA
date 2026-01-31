@@ -39,9 +39,6 @@ export default function EggPredictionGraph() {
         }
     }, [rangeEnabled]);
     
-    const handleBack = () => {
-        router.push('/web/shipment'); 
-    };
     // 1. 期間指定で絞り込む
     const filteredDataByRange = useMemo(() => {
         if (!rangeEnabled || !rangeStart || !rangeEnd) return DUMMY_PREDICTION_DATA;
@@ -78,7 +75,7 @@ export default function EggPredictionGraph() {
         };
         const datasets = [
             {
-                label: '🥚 予測産卵数',
+                label: '予測産卵数',
                 data: sortedKeys.map(k => getAverage(k, 'pred')),
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
@@ -87,7 +84,7 @@ export default function EggPredictionGraph() {
                 pointRadius: 4,
             },
             {
-                label: '📊 実績産卵数',
+                label: '実績産卵数',
                 data: sortedKeys.map(k => getAverage(k, 'act')),
                 borderColor: 'rgb(54, 162, 235)',
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
@@ -97,7 +94,7 @@ export default function EggPredictionGraph() {
                 pointRadius: 4,
             },
             {
-                label: '🌡️ 累積快適ポテンシャル',
+                label: '累積快適ポテンシャル',
                 data: sortedKeys.map(k => getAverage(k, 'pot')),
                 borderColor: 'rgb(75, 192, 192)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -145,7 +142,7 @@ export default function EggPredictionGraph() {
                     font: { size: 12 } 
                 },
                 min: 400,
-                max: 600,
+                suggestedMax: 650,
                 ticks: {
                     font: { size: 10 } 
                 },
@@ -161,7 +158,7 @@ export default function EggPredictionGraph() {
                     font: { size: 12 } 
                 },
                 min: 800,
-                max: 1400,
+                suggestedMax: 1500,
                 ticks: {
                     font: { size: 10 } 
                 },

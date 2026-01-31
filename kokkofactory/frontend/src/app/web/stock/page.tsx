@@ -5,6 +5,7 @@ import LoadingScreen from "@components/LoadingScreen";
 import LeftPullTab from "@components/LeftPullTab";
 import styles from "./page.module.css";
 import commonStyles from '@components/styles/common.module.css';
+import { useRouter } from "next/navigation";
 
 // 在庫情報の型定義
 interface InventoryItem {
@@ -80,6 +81,7 @@ export default function StockPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const [searchTerms, setSearchTerms] = useState({
     supplierName: "",
@@ -90,6 +92,15 @@ export default function StockPage() {
     inventoryCount: "",
   });
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 600);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+  
   // 在庫読み込み
   const loadInventory = useCallback(async () => {
     setLoading(true);
@@ -107,6 +118,10 @@ export default function StockPage() {
   useEffect(() => {
     loadInventory();
   }, [loadInventory]);
+
+  const handleNew = () => {
+    router.push('/web/stock/new');
+  };
 
   // 在庫更新ハンドラ
   const handleUpdate = async (item: InventoryItem) => {
@@ -216,58 +231,83 @@ const handleDelete = async (item: InventoryItem) => {
     <LeftPullTab>
       <div className={commonStyles.container}>
         <h1 className={commonStyles.title}>こっこふぁくとりー/在庫</h1>
-        <p className={commonStyles.infoBox}>登録された在庫情報を表示します。在庫の新規作成は「新規作成 📝」ボタンを押してください。黄色の背景は在庫数が基準値を下回っていることを示します。</p>
-        <div className={styles.header}>
-          <a href="/web/stock/new" className={styles.newButton}>新規作成 📝</a>
+        <p className={commonStyles.infoBox}>登録された在庫情報を表示します。在庫の新規作成は「新規作成」ボタンを押してください。黄色の背景は在庫数が基準値を下回っていることを示します。</p>
+        <div className={styles.buttonContainer}>
+          <div className={styles.buttonarea}>
+            <button className={styles.button} onClick={handleNew}>
+              新規作成
+            </button>
+          </div>
         </div>
 
         {/* 検索フォーム */}
         <form className={styles.searchForm} onSubmit={(e) => e.preventDefault()}>
-          <input type="text" name="supplierName" placeholder="仕入れ先名" value={searchTerms.supplierName} onChange={handleSearchChange} className={styles.searchInput} />
-          <input type="text" name="itemName" placeholder="品目名" value={searchTerms.itemName} onChange={handleSearchChange} className={styles.searchInput} />
-          <input type="text" name="inventoryCount" placeholder="在庫数" value={searchTerms.inventoryCount} onChange={handleSearchChange} className={styles.searchInput} />
-          <input type="text" name="address" placeholder="住所" value={searchTerms.address} onChange={handleSearchChange} className={styles.searchInput} />
-          <input type="text" name="phoneNumber" placeholder="連絡先" value={searchTerms.phoneNumber} onChange={handleSearchChange} className={styles.searchInput} />
+          {isMobile ? (
+            // スマホはキーワード1つだけ
+            <input
+              type="text"
+              name="supplierName"
+              placeholder="キーワード検索"
+              value={searchTerms.supplierName}
+              onChange={handleSearchChange}
+              className={styles.searchInput}
+            />
+          ) : (
+            // PCはフル検索フォーム
+            <>
+              <input type="text" name="supplierName" placeholder="仕入れ先名" value={searchTerms.supplierName} onChange={handleSearchChange} className={styles.searchInput} />
+              <input type="text" name="itemName" placeholder="品目名" value={searchTerms.itemName} onChange={handleSearchChange} className={styles.searchInput} />
+              <input type="text" name="inventoryCount" placeholder="在庫数" value={searchTerms.inventoryCount} onChange={handleSearchChange} className={styles.searchInput} />
+              <input type="text" name="address" placeholder="住所" value={searchTerms.address} onChange={handleSearchChange} className={styles.searchInput} />
+              <input type="text" name="phoneNumber" placeholder="連絡先" value={searchTerms.phoneNumber} onChange={handleSearchChange} className={styles.searchInput} />
+              <input type="text" name="email" placeholder="メール" value={searchTerms.email} onChange={handleSearchChange} className={styles.searchInput} />
+            </>
+          )}
+          <button type="submit" className={styles.searchButton}>
+            検索
+          </button>
           <button type="button" onClick={handleClear} className={styles.clearButton}>クリア</button>
         </form>
 
         {loading ? (
           <LoadingScreen message="データ読み込み中・・・" />
         ) : (
-          <table className={styles.table}>
-            <thead className={styles.tableHeader}>
-              <tr>
-                <th>仕入れ先名</th>
-                <th>品目名</th>
-                <th>在庫数</th>
-                <th>アラート基準値</th>
-                <th>住所</th>
-                <th>連絡先</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredInventory.length === 0 ? (
-                <tr><td colSpan={7}>在庫データがないよ</td></tr>
-              ) : (
-                filteredInventory.map((item, index) => (
-                  <tr key={index} className={styles.tableRow} style={item.remainingCount <= item.alertThreshold ? { backgroundColor: "#FFF9C4" } : {}}>
-                    <td>{item.supplierName}</td>
-                    <td>{item.ItemName}</td>
-                    <td>{item.remainingCount.toLocaleString()}</td>
-                    <td>{item.alertThreshold.toLocaleString()}</td>
-                    <td>{item.address}</td>
-                    <td>{item.phoneNumber} / {item.email}</td>
-                    <td>
-                      <button className={styles.updateButton} onClick={() => handleAlertUpdate(item)} style={{ marginRight: '8px' }}>🔔 基準値</button>
-                      <button className={styles.updateButton} onClick={() => handleUpdate(item)}>🖊️ 更新</button>
-                      <button className={styles.updateButton} onClick={() => handleDelete(item)} style={{ marginLeft: '8px' }}>🗑️ 削除</button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+          <div className={styles.tableWrapper}>
+            <table className={styles.stockTable}>
+              <thead className={styles.tableHeader}>
+                <tr>
+                  <th>仕入れ先</th>
+                  <th>品目</th>
+                  <th>在庫数</th>
+                  <th>アラート基準値</th>
+                  <th>住所</th>
+                  <th>連絡先</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredInventory.length === 0 ? (
+                  <tr><td colSpan={7}>在庫データがないよ</td></tr>
+                ) : (
+                  filteredInventory.map((item, index) => (
+                    <tr key={index} className={styles.tableRow} style={item.remainingCount <= item.alertThreshold ? { backgroundColor: "#FFF9C4" } : {}}>
+                      <td>{item.supplierName}</td>
+                      <td>{item.ItemName}</td>
+                      <td>{item.remainingCount.toLocaleString()}</td>
+                      <td>{item.alertThreshold.toLocaleString()}</td>
+                      <td>{item.address}</td>
+                      <td>{item.phoneNumber} / {item.email}</td>
+                      <td>
+                        <button className={styles.updateButton} onClick={() => handleAlertUpdate(item)} style={{ marginRight: '8px' }}>🔔 基準値</button>
+                        <button className={styles.updateButton} onClick={() => handleUpdate(item)}>🖊️ 更新</button>
+                        <button className={styles.updateButton} onClick={() => handleDelete(item)} style={{ marginLeft: '8px' }}>🗑️ 削除</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
         {error && <div className={styles.errorText}>エラー: {error}</div>}
       </div>

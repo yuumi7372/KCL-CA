@@ -5,6 +5,7 @@ import LeftPullTab from "@components/LeftPullTab";
 import styles from "./page.module.css";
 import LoadingScreen from "@components/LoadingScreen";
 import commonStyles from '@components/styles/common.module.css';
+import { useRouter } from "next/navigation";
 
 interface Customer {
   id: number;
@@ -24,19 +25,37 @@ export default function CustomerListPage() {
     phone_number: "",
     email: "",
   });
+  const router = useRouter(); 
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     fetchCustomers();
   }, []);
 
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 600);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const fetchCustomers = async () => {
-    const query = new URLSearchParams(searchTerm).toString();
+    setLoading(true);
     try {
-      setLoading(true);
+      // スマホなら name を全部の検索項目にコピー
+      const queryObj = isMobile
+        ? {
+            name: searchTerm.name,
+            address: searchTerm.name,
+            phone_number: searchTerm.name,
+            email: searchTerm.name,
+          }
+        : searchTerm;
+
+      const query = new URLSearchParams(queryObj).toString();
       const response = await fetch(`/api/customers?${query}`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+      if (!response.ok) throw new Error("Network response was not ok");
+
       const data: Customer[] = await response.json();
       setCustomers(data);
     } catch (err) {
@@ -55,6 +74,9 @@ export default function CustomerListPage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchCustomers();
+  };
+  const handleNew = () => {
+    router.push('/web/customers/new');
   };
 
   const handleClear = () => {
@@ -112,45 +134,64 @@ export default function CustomerListPage() {
       <div className={commonStyles.container}>
         <h1 className={commonStyles.title}>こっこふぁくとりー/取引先名簿</h1>
         <p className={commonStyles.infoBox}>登録された取引先を表示します。新規登録の場合は「新規作成」を押してください。</p>
-        <div className={styles.header}>
-          <a href="/web/customers/new" className={styles.newButton}>
-            新規作成
-          </a>
+        <div className={styles.buttonContainer}>
+          <div className={styles.buttonarea}>
+            <button className={styles.button} onClick={handleNew}>
+              新規作成
+            </button>
+          </div>
         </div>
 
+        {/* スマホかPCでフォーム切り替え */}
         <form onSubmit={handleSearch} className={styles.searchForm}>
-          <input
-            type="text"
-            name="name"
-            placeholder="取引先"
-            className={styles.searchInput}
-            value={searchTerm.name}
-            onChange={handleSearchChange}
-          />
-          <input
-            type="text"
-            name="address"
-            placeholder="住所"
-            className={styles.searchInput}
-            value={searchTerm.address}
-            onChange={handleSearchChange}
-          />
-          <input
-            type="text"
-            name="phone_number"
-            placeholder="電話"
-            className={styles.searchInput}
-            value={searchTerm.phone_number}
-            onChange={handleSearchChange}
-          />
-          <input
-            type="text"
-            name="email"
-            placeholder="メール"
-            className={styles.searchInput}
-            value={searchTerm.email}
-            onChange={handleSearchChange}
-          />
+          {isMobile ? (
+            // スマホはキーワード1つだけ
+            <input
+              type="text"
+              name="name"
+              placeholder="検索キーワード"
+              className={styles.searchInput}
+              value={searchTerm.name}
+              onChange={handleSearchChange}
+            />
+          ) : (
+            // PCはフルフォーム
+            <>
+              <input
+                type="text"
+                name="name"
+                placeholder="取引先"
+                className={styles.searchInput}
+                value={searchTerm.name}
+                onChange={handleSearchChange}
+              />
+              <input
+                type="text"
+                name="address"
+                placeholder="住所"
+                className={styles.searchInput}
+                value={searchTerm.address}
+                onChange={handleSearchChange}
+              />
+              <input
+                type="text"
+                name="phone_number"
+                placeholder="電話"
+                className={styles.searchInput}
+                value={searchTerm.phone_number}
+                onChange={handleSearchChange}
+              />
+              <input
+                type="text"
+                name="email"
+                placeholder="メール"
+                className={styles.searchInput}
+                value={searchTerm.email}
+                onChange={handleSearchChange}
+              />
+            </>
+          )}
+
           <button type="submit" className={styles.searchButton}>
             検索
           </button>
@@ -166,35 +207,37 @@ export default function CustomerListPage() {
         {customers.length === 0 ? (
           <p>取引先が見つかりませんでした。</p>
         ) : (
-          <table className={styles.customerTable}>
-            <thead>
-              <tr className={styles.tableHeader}>
-                <th>取引先</th>
-                <th>住所</th>
-                <th>電話</th>
-                <th>メール</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {customers.map((customer) => (
-                <tr key={customer.id} className={styles.tableRow}>
-                  <td>{customer.name}</td>
-                  <td>{customer.address || "未登録"}</td>
-                  <td>{customer.phone_number || "未登録"}</td>
-                  <td>{customer.email || "未登録"}</td>
-                  <td>
-                    <span
-                      className={styles.deleteIcon}
-                      onClick={() => handleDelete(customer.id, customer.name)}
-                    >
-                      &#128465;
-                    </span>
-                  </td>
+          <div className={styles.tableWrapper}>
+            <table className={styles.customerTable}>
+              <thead>
+                <tr className={styles.tableHeader}>
+                  <th>取引先</th>
+                  <th>住所</th>
+                  <th>電話</th>
+                  <th>メール</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {customers.map((customer) => (
+                  <tr key={customer.id} className={styles.tableRow}>
+                    <td>{customer.name}</td>
+                    <td>{customer.address || "未登録"}</td>
+                    <td>{customer.phone_number || "未登録"}</td>
+                    <td>{customer.email || "未登録"}</td>
+                    <td>
+                      <span
+                        className={styles.deleteIcon}
+                        onClick={() => handleDelete(customer.id, customer.name)}
+                      >
+                        &#128465;
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </LeftPullTab>

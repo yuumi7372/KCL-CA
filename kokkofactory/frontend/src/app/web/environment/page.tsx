@@ -30,8 +30,8 @@ export default function WebPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Next.jsのrewrites設定により、モックサーバーに転送される
-                const response = await fetch('http://localhost:4000/api/v1/data'); 
+                //API Route
+                const response = await fetch('/api/environment'); 
                 
                 if (!response.ok) {
                     // HTTPエラーの場合、throwしてcatchブロックで処理
@@ -54,7 +54,7 @@ export default function WebPage() {
         fetchData(); 
 
         // 5秒ごとにデータを再取得する (ポーリング)
-        const intervalId = setInterval(fetchData, 5000); 
+        const intervalId = setInterval(fetchData, 10000); 
 
         // クリーンアップ
         return () => clearInterval(intervalId);

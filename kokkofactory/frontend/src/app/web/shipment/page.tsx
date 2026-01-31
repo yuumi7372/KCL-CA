@@ -63,16 +63,16 @@ export default function WebPage() {
     <LeftPullTab>
       <div className ={commonStyles.container}>
         <h1 className={commonStyles.title}>こっこふぁくとりー/出荷履歴</h1>
-        <p className={commonStyles.infoBox}>登録された出荷履歴を表示します。新規登録の場合は「新規出荷情報」を、出荷履歴推移を閲覧する場合は「グラフを表示」を押してください。</p>
+        <p className={commonStyles.infoBox}>登録された出荷履歴を表示します。新規登録の場合は「新規追加」を、出荷履歴推移を閲覧する場合は「グラフ」を押してください。</p>
         <div className={styles.buttonContainer}>
           <div className={styles.buttonarea}>
             <button className={styles.button} onClick={handleShowGraph}>
-              グラフを表示
+              グラフ
             </button>
           </div>
           <div className={styles.buttonarea}>
             <button className={styles.button} onClick={handleNew}>
-              新規出荷情報
+              新規追加
             </button>
           </div>
         </div>
@@ -80,30 +80,32 @@ export default function WebPage() {
         {shipments.length === 0 ? (
           <p>出荷情報がありません。</p>
         ) : (
-          <table className={styles.shipmentTable}>
-            <thead>
-              <tr className={styles.tableHeader}>
-                <th>取引先</th>
-                <th>出荷日</th>
-                <th>出荷個数</th>
-                <th>住所</th>
-                <th>電話番号</th>
-                <th>メール</th>
-              </tr>
-            </thead>
-            <tbody>
-              {shipments.map((shipment, index) => (
-                <tr key={index} className={styles.tableRow}>
-                  <td>{shipment.vendor}</td>
-                  <td>{new Date(shipment.shipmentDate).toLocaleDateString()}</td>
-                  <td>{shipment.shippedCount}</td>
-                  <td>{shipment.address || '情報なし'}</td>
-                  <td>{shipment.phoneNumber || '情報なし'}</td>
-                  <td>{shipment.email || '情報なし'}</td>
+          <div className={styles.tableWrapper}>
+            <table className={styles.shipmentTable}>
+              <thead>
+                <tr className={styles.tableHeader}>
+                  <th>取引先</th>
+                  <th>出荷日</th>
+                  <th>出荷個数</th>
+                  <th>住所</th>
+                  <th>電話番号</th>
+                  <th>メール</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {shipments.map((shipment, index) => (
+                  <tr key={index} className={styles.tableRow}>
+                    <td>{shipment.vendor}</td>
+                    <td>{new Date(shipment.shipmentDate).toLocaleDateString()}</td>
+                    <td>{shipment.shippedCount}</td>
+                    <td>{shipment.address || '情報なし'}</td>
+                    <td>{shipment.phoneNumber || '情報なし'}</td>
+                    <td>{shipment.email || '情報なし'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </LeftPullTab>

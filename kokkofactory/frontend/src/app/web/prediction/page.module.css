@@ -36,7 +36,7 @@
   color: #8D6E63;
   margin-bottom: 4px;
   padding-bottom: 4px;
-  border-bottom: 1px solid var(--color-secondary); 
+  border-bottom: 1px solid #E6B800;
 }
 
 
@@ -45,7 +45,7 @@
     display: flex;
     margin-left: 10px;
     gap: 0; 
-    border: 1px solid var(--color-secondary); 
+    border: 1px solid #E6B800; 
     border-radius: 4px;
     overflow: hidden;
     flex-shrink: 0;
@@ -57,7 +57,7 @@
     flex: 1;
     border: none;
     background: #fff; 
-    color: var(--color-text);
+    color: #5D4037;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
@@ -72,10 +72,10 @@
 }
 
 .tab.active {
-    background: var(--color-primary); /* 黄色 */
-    color: var(--color-text); 
+    background: #FDD835;
+    color: #5D4037; 
     font-weight: bold;
-    border: 2px solid var(--color-primary); /* 境界線をアクティブボタンに重ねる */
+    border: 2px solid #E6B800; /* 境界線をアクティブボタンに重ねる */
     margin: -1px; /* 境界線がtabGroupと重なるように調整 */
 }
 

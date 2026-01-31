@@ -137,6 +137,8 @@
     left: 0;
     height: auto;
     overflow-y: scroll;
+    top: env(safe-area-inset-top);
+    bottom: env(safe-area-inset-bottom);
   }
 
   .open {
@@ -153,5 +155,7 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.4);
     z-index: 998;
+    top: env(safe-area-inset-top);
+    bottom: env(safe-area-inset-bottom);
   }
 }

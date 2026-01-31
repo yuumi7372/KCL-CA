@@ -135,7 +135,7 @@
     width: min(80vw, 300px);
     transform: translateX(-100%);
     left: 0;
-    height: 100vh;
+    height: auto;
     overflow-y: scroll;
   }
 

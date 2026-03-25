@@ -199,3 +199,23 @@
 .backButton:hover {
     background-color: #ffc700;
 }
+
+/* 画面幅が600px以下のスマホ用 */
+@media (max-width: 600px) {
+  .lineChartWrapper {
+    width: 100%;
+    height: 280px;
+    position: relative;
+  }
+    .engraphWrapper {
+    flex-direction: column;   /* ← 縦並びにする */
+    gap: 30px;                /* ← グラフの間隔 */
+    align-items: center;      /* ← 中央寄せ */
+  }
+
+  .totalEngrapf,
+  .selectEngraph {
+    width: 100%;
+    max-width: 320px;         /* ← スマホでちょうどいいサイズ */
+  }
+}

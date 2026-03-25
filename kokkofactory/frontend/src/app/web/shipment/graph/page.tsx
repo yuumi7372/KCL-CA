@@ -19,8 +19,13 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line, Pie } from 'react-chartjs-2';
+import { Pie } from 'react-chartjs-2';
+import dynamic from "next/dynamic"; 
 
+const DynamicLine = dynamic(
+  () => import("react-chartjs-2").then((mod) => mod.Line),
+  { ssr: false }
+);
 // Chart.js を登録
 ChartJS.register(
   CategoryScale,
@@ -220,6 +225,7 @@ export default function GraphPage() {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { position: "top" as const },
       title: { display: true, text: "出荷数の推移（企業別＋合計）" },
@@ -312,31 +318,33 @@ export default function GraphPage() {
                 )}
               </div>
             </div>
-            <div className={styles.graphArea}>
+            
               {shipments.length === 0 ? (
                 <p>まだ出荷データがありません！</p>
               ) : (
-                <Line 
-                  ref={chartRef}
-                  data={{ labels, datasets }} 
-                  options={options}
-                  onClick={(e) => {
-                    if (!chartRef.current) return;
-                    const points = chartRef.current.getElementsAtEventForMode(
-                      e.nativeEvent,
-                      "nearest",
-                      { intersect: true },
-                      true
-                    );
-                    if (points.length > 0) {
-                      const idx = points[0].index;
-                      const key = sortedKeys[idx]; // 内部キーを保存
-                      setSelectedKey(key);
-                    }
-                  }}
-                />
-              )}
-            </div>
+                <div className={styles.lineChartWrapper}>
+                  <DynamicLine 
+                    ref={chartRef}
+                    data={{ labels, datasets }} 
+                    options={options}
+                    onClick={(e) => {
+                      if (!chartRef.current) return;
+                      const points = chartRef.current.getElementsAtEventForMode(
+                        e.nativeEvent,
+                        "nearest",
+                        { intersect: true },
+                        true
+                      );
+                      if (points.length > 0) {
+                        const idx = points[0].index;
+                        const key = sortedKeys[idx]; // 内部キーを保存
+                        setSelectedKey(key);
+                      }
+                    }}
+                  />
+                </div>
+              )} 
+            
           </div>
           <div className={styles.list}>
             <h2 className={styles.listHeader}>

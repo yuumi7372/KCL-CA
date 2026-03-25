@@ -72,6 +72,11 @@ interface DashboardData {
     // 在庫アラート情報
     lowStockItemsCount: number;
     lowStockItems: { name: string; remaining: number; threshold: number }[];
+
+    //気温、湿度
+    airTemperature: number;
+    humidity: number;
+    waterTemperature: number;
 }
 
 
@@ -117,14 +122,20 @@ const fetchShipmentData = async (): Promise<ShipmentDataList> => {
     return shipRes.json(); 
 };
 
+const fetchEnvironment = async () => {
+  const res = await fetch("/api/environment");
+  if (!res.ok) throw new Error("環境データ取得失敗");
+  return res.json();
+};
 
 const fetchDashboardData = async (): Promise<DashboardData> => {
     // Promise.allで複数のAPIを並行して実行
-    const [eggList, inventoryList, deadChickenList, shipmentList] = await Promise.all([
+    const [eggList, inventoryList, deadChickenList, shipmentList, env] = await Promise.all([
         fetchEggData(),
         fetchStockData(),
         fetchDeadChickenData(),
-        fetchShipmentData()
+        fetchShipmentData(),
+        fetchEnvironment()
     ]);
 
     // --- 【日付判定用: JSTで「今日」の00:00:00を計算】 ---
@@ -197,6 +208,9 @@ const fetchDashboardData = async (): Promise<DashboardData> => {
         latestShipments: todayShipments,                  
         lowStockItemsCount: lowStockItems.length,
         lowStockItems: lowStockItems,
+        airTemperature: env.airTemperature,
+        humidity: env.humidity,
+        waterTemperature: env.waterTemperature,
     };
 };
 
@@ -379,19 +393,19 @@ export default function DashboardPage() {
                             {/* 🌡️ 気温 (赤色: 警告) */}
                             <div className={`${styles.envKpiCard} ${styles.kpiAlertRed}`}>
                                 <span className={styles.kpiLabelEnv}>気温</span>
-                                <span className={styles.kpiValueEnv}>38.6<span style={{ fontSize: '0.6em' }}>°C</span></span>
+                                <span className={styles.kpiValueEnv}>{data?.airTemperature}<span style={{ fontSize: '0.6em' }}>°C</span></span>
                             </div>
 
                             {/* 🌿 2. 湿度 (緑色: 正常) */}
                             <div className={`${styles.envKpiCard} ${styles.kpiNormalGreen}`}>
                                 <span className={styles.kpiLabelEnv}>湿度</span>
-                                <span className={styles.kpiValueEnv}>52<span style={{ fontSize: '0.6em' }}>%</span></span>
+                                <span className={styles.kpiValueEnv}>{data?.humidity}<span style={{ fontSize: '0.6em' }}>%</span></span>
                             </div>
 
                             {/* 💧 3. 飲水温 (黄色: 注意) */}
                             <div className={`${styles.envKpiCard} ${styles.kpiWarningYellow}`}>
                                 <span className={styles.kpiLabelEnv}>飲水温</span>
-                                <span className={styles.kpiValueEnv}>26.6<span style={{ fontSize: '0.6em' }}>°C</span></span>
+                                <span className={styles.kpiValueEnv}>{data?.waterTemperature}<span style={{ fontSize: '0.6em' }}>°C</span></span>
                             </div>
                         </div>
 

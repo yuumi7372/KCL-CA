@@ -47,7 +47,7 @@ const LeftPullTab = ({ children }: { children: React.ReactNode }) => {
     return (
       <Link href={href}>
         {/* 一致する場合のみ 'activeButton' クラスを追加します */}
-        <button className={`${styles.button}`}>
+        <button className={`${styles.button} ${isActive ? styles.activeButton : ""}`}>
           {children}
         </button>
       </Link>

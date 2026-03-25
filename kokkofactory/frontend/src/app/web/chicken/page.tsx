@@ -431,9 +431,11 @@ export default function ChickenFarmDataPage() {
                   <span className={styles.unit}>個</span>
                 </div>
                 {/* 保存ボタン */}
-                <button type="submit" disabled={isLoading} className={styles.button}>
-                  {isLoading ? "保存中…" : "保存"}
-                </button>
+                <div className={styles.buttonContainer}>
+                  <button type="submit" disabled={isLoading} className={styles.button}>
+                    {isLoading ? "保存中…" : "保存"}
+                  </button>
+                </div>
               </form>
             </div>
 
@@ -485,9 +487,11 @@ export default function ChickenFarmDataPage() {
                 </label>
 
                 {/* 保存ボタン */}
-                <button type="submit" disabled={isLoading} className={styles.button}>
-                  {isLoading ? "保存中…" : "保存"}
-                </button>
+                <div className={styles.buttonContainer}>
+                  <button type="submit" disabled={isLoading} className={styles.button}>
+                    {isLoading ? "保存中…" : "保存"}
+                  </button>
+                </div>
               </form>
             </div>
             
@@ -518,7 +522,7 @@ export default function ChickenFarmDataPage() {
                         .toString()
                         .padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
                       return (
-                        <tr key={egg.id}>
+                        <tr key={egg.id} className={styles.tableRow}>
                           <td>{formattedDate}</td>
                           <td>{egg.coop_number}</td>
                           <td>{egg.count}</td>

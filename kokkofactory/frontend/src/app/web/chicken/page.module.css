@@ -16,10 +16,12 @@
     align-items: center;        /* 縦方向の中央寄せ */
     flex:1;
     height: 100vh;
+    margin-top: 10px;
 }
 /* 入力フォーム全体 */
 .form {
   display: flex;
+  color:#5D4037;
   flex-direction: column;
   width:70%;
   height: auto;
@@ -36,11 +38,12 @@
   display: flex;
   flex-direction: column;
   font-weight: 600;
-  color: #333;
+  color:#5D4037;
 }
 
 /* セレクトとインプット共通 */
 .input {
+  color:#5D4037;
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 8px;
@@ -57,19 +60,57 @@
   font-size: 16px;
   margin-left: 4px;
 }
-.button {
-    margin: 0 auto;
-    background-color: #ffd700;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-weight: bold;
-    padding:1rem;
-    width:35%;
-    align-self: center;
+
+.buttonContainer {
+  display: flex;
+  margin: 10px;
+  flex-direction: row;
+  justify-content: center;
 }
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px 10px 50px; /* 左に丸分のスペース確保 */
+  border-radius: 100px;
+  background-color: #ffffff; 
+  border: 3px solid transparent; /* 枠の太さ */
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  position: relative;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+}
+/* 左の黄色丸 */
+.button::after {
+  content: "";
+  position: absolute;
+  left: 3px;       /* 左端からの位置 */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fffc33, #ff9900);
+  /* 円形グラデーション: 中心に黄色、外側にオレンジ */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;      /* 文字より前面に */
+}
+
 .button:hover {
-  background-color: #ffc700;
+  background-image: linear-gradient(90deg, #ffeb33, #ff9900), /* 内側を黄色っぽく */
+                    linear-gradient(90deg, #ffeb33, #ff9900); /* ボーダーはそのまま */
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* 押したとき */
+.button:active {
+  transform: translateY(2px); /* 少し下に押す */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* 影を小さく */
 }
 
 
@@ -79,12 +120,21 @@
     flex: 1;
     flex-direction: column; /* ←縦並び */
 }
+.eggMemoryContainer h3 {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 3;
+  padding: 10px 0;
+}
 .eggMemoryContainer{
     flex:1;
     display: flex;              /* 子をflexアイテムにする */
     flex-direction: column; /* ←縦並び */ 
     overflow-y: auto;  /* ここでスクロール */
-    padding:10px;
+    color:#5D4037;
+    margin-bottom: 20px;
+    margin-top: 10px;
     
 }
 .deathMemoryContainer{
@@ -92,63 +142,59 @@
     display: flex;              /* 子をflexアイテムにする */
     flex-direction: column; /* ←縦並び */
     overflow-y: auto;  /* ここでスクロール */
-    padding:10px;
-    
+    color:#5D4037;
+    margin-bottom: 20px;
 }
 .memoryTable{
     width:100%;
     border-collapse: collapse;
     table-layout: fixed;
     border-spacing:0;
-    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-
 }
-.memoryTable th,
-.memoryTable td {
-  border: 1px solid #ccc;
-  padding: 4px 8px;
-  text-align: center;
-}
-
-.memoryTable thead {
-    position: sticky; /* ヘッダー固定 */
-    top: 0;
-    background-color: #f0f0f0;
-    z-index: 1;
-  width: 100%;
-  table-layout: fixed;
-  display: table;
-}
-
-.memoryTable thead th {
-   padding: 12px;
-    text-align: center;
-   border-bottom: 2px solid #ddd;
-    width: 20%; /* 各列の幅を均等に */
-}
-
-.memoryTable tbody {
-  display: block;
-  overflow-y: auto;
-  max-height: 250px;
-  width: 100%;
-}
-
-.memoryTable tbody tr {
-  display: table; /* 💡 各行の幅を100%にし、tdがthの幅に従うようにする */
-  width: 100%;
-  table-layout: fixed;
-}
-
 
 .tableHeader {
-  background-color:#ffcc00;
+  background-color: #f2f2f2;
 }
 
 .tableHeader th {
   padding: 12px;
   text-align: left;
   border-bottom: 2px solid #ddd;
+  color:#5D4037;
+}
+
+.tableRow {
+  border-bottom: 1px solid #eee;
+}
+
+.tableRow:nth-child(even) {
+  background-color: #fcfcfc;
+}
+
+.tableRow td {
+  padding: 12px;
+  vertical-align: top;
+  color:#5D4037;
+}
+
+/* 画面幅が600px以下のスマホ用 */
+@media (max-width: 600px) {
+  .main {
+    flex-direction: column;   /* 横 → 縦にする */
+    height: auto;
+  }
+
+  .inputContainer {
+    height: auto;
+  }
+
+  .memoryContainer {
+    height: auto;
+  }
+
+  .FormContainer {
+    height: auto;
+    padding: 10px 0;
+  }
 }

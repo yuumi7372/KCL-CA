@@ -14,6 +14,11 @@
     flex-direction: column;
     min-width: 50%;
 }
+.lineChartWrapper {
+  width: 100%;
+  height: 400px;
+  position: relative;
+}
 /* --- コントロールパネル --- (ボタンのスタイルを参考に調整) */
 .controlPanel {
     margin: 10px;

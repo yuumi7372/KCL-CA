@@ -1,4 +1,0 @@
-パソコン以外のデバイスのフロントはmobileで行う
-iOS/Andoroidアプリ向きらしい
-npx create-expo-app mobile --template　より、React Nativeのフレームワーク追加
-使用言語はTypScript

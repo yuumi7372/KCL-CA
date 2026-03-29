@@ -13,4 +13,5 @@ if (!admin.apps.length) {
 
 export const adminDb = admin.firestore();
 export const adminAuth = admin.auth();
+export const createClient = () => admin.auth();
 export const adminTimestamp = admin.firestore.Timestamp;

@@ -184,7 +184,7 @@ export default function EggPredictionGraph() {
     return (
         <LeftPullTab> {/* ★ LeftPullTabでラップ */}
             <div className={commonStyles.container}>
-                <h1 className={commonStyles.title}>産卵数予測</h1>
+                <h1 className={commonStyles.title}>こっこふぁくとりー/産卵数予測</h1>
                 <p className={commonStyles.infoBox}>このグラフは、過去7日間の気温データから計算された累積快適ポテンシャルに基づき、次期（日）の産卵数を予測するモデルを可視化</p>
                 <div className={styles.mainContent}> 
                     <div className={styles.graphSection}>

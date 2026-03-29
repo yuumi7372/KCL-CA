@@ -1,19 +1,43 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/utils/firebase/server";
 
-
-
 // --- GET ---
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    
+    const url = new URL(request.url);
+
+    // クエリパラメータ取得（スマホのキーワード検索もここで処理）
+    const name = url.searchParams.get("name")?.toLowerCase() || "";
+    const address = url.searchParams.get("address")?.toLowerCase() || "";
+    const phone_number = url.searchParams.get("phone_number")?.toLowerCase() || "";
+    const email = url.searchParams.get("email")?.toLowerCase() || "";
+
     const snapshot = await adminDb.collection("customers").get();
 
-    const customers = snapshot.docs.map(doc => ({
+    // 全件取得してからフィルター
+    let customers = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
     }));
 
+    // スマホ版キーワード検索は OR 条件にする
+    if (name) { // name にはスマホのキーワードが入っている
+      const keyword = name.toLowerCase();
+      customers = customers.filter((c: any) =>
+        (c.name?.toLowerCase() || "").includes(keyword) ||
+        (c.address?.toLowerCase() || "").includes(keyword) ||
+        (c.phone_number?.toLowerCase() || "").includes(keyword) ||
+        (c.email?.toLowerCase() || "").includes(keyword)
+      );
+    } else {
+      // PC版の AND 条件
+      customers = customers.filter((c: any) =>
+        (c.name?.toLowerCase() || "").includes(name) &&
+        (c.address?.toLowerCase() || "").includes(address) &&
+        (c.phone_number?.toLowerCase() || "").includes(phone_number) &&
+        (c.email?.toLowerCase() || "").includes(email)
+      );
+    }
     return NextResponse.json(customers);
   } catch (e) {
     console.error(e);
@@ -57,7 +81,6 @@ export async function POST(request: Request) {
 // --- DELETE ---
 export async function DELETE(request: Request) {
   try {
-   
     const { id } = await request.json();
 
     if (!id) {

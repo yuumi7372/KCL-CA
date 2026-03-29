@@ -431,8 +431,8 @@ export default function ChickenFarmDataPage() {
                   <span className={styles.unit}>個</span>
                 </div>
                 {/* 保存ボタン */}
-                <div className={styles.buttonContainer}>
-                  <button type="submit" disabled={isLoading} className={styles.button}>
+                <div className={commonStyles.buttonContainer}>
+                  <button type="submit" disabled={isLoading} className={commonStyles.button}>
                     {isLoading ? "保存中…" : "保存"}
                   </button>
                 </div>
@@ -487,8 +487,8 @@ export default function ChickenFarmDataPage() {
                 </label>
 
                 {/* 保存ボタン */}
-                <div className={styles.buttonContainer}>
-                  <button type="submit" disabled={isLoading} className={styles.button}>
+                <div className={commonStyles.buttonContainer}>
+                  <button type="submit" disabled={isLoading} className={commonStyles.button}>
                     {isLoading ? "保存中…" : "保存"}
                   </button>
                 </div>

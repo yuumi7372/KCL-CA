@@ -1,62 +1,9 @@
 /* frontend/src/app/web/shipment/page.module.css */
 
-.buttonContainer {
-  display: flex;
-  margin: 10px;
-  flex-direction: row;
-  justify-content: center;
-}
 .buttonarea{
   display: flex;
   width: 50%;
   justify-content: center;
-}
-
-.button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px 10px 50px; /* 左に丸分のスペース確保 */
-  border-radius: 100px;
-  background-color: #ffffff; 
-  border: 3px solid transparent; /* 枠の太さ */
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  position: relative;
-  font-weight: bold;
-  font-size: 15px;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* 左の黄色丸 */
-.button::after {
-  content: "";
-  position: absolute;
-  left: 3px;       /* 左端からの位置 */
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #fffc33, #ff9900);
-  /* 円形グラデーション: 中心に黄色、外側にオレンジ */
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;      /* 文字より前面に */
-}
-
-.button:hover {
-  background-image: linear-gradient(90deg, #ffeb33, #ff9900), /* 内側を黄色っぽく */
-                    linear-gradient(90deg, #ffeb33, #ff9900); /* ボーダーはそのまま */
-  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
-}
-
-/* 押したとき */
-.button:active {
-  transform: translateY(2px); /* 少し下に押す */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* 影を小さく */
 }
 
 .shipmentTable {

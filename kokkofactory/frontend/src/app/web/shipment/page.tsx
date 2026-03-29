@@ -64,14 +64,14 @@ export default function WebPage() {
       <div className ={commonStyles.container}>
         <h1 className={commonStyles.title}>こっこふぁくとりー/出荷履歴</h1>
         <p className={commonStyles.infoBox}>登録された出荷履歴を表示します。新規登録の場合は「新規追加」を、出荷履歴推移を閲覧する場合は「グラフ」を押してください。</p>
-        <div className={styles.buttonContainer}>
+        <div className={commonStyles.buttonContainer}>
           <div className={styles.buttonarea}>
-            <button className={styles.button} onClick={handleShowGraph}>
+            <button className={commonStyles.button} onClick={handleShowGraph}>
               グラフ
             </button>
           </div>
           <div className={styles.buttonarea}>
-            <button className={styles.button} onClick={handleNew}>
+            <button className={commonStyles.button} onClick={handleNew}>
               新規追加
             </button>
           </div>

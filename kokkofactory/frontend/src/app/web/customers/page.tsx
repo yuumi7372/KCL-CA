@@ -134,9 +134,9 @@ export default function CustomerListPage() {
       <div className={commonStyles.container}>
         <h1 className={commonStyles.title}>こっこふぁくとりー/取引先名簿</h1>
         <p className={commonStyles.infoBox}>登録された取引先を表示します。新規登録の場合は「新規作成」を押してください。</p>
-        <div className={styles.buttonContainer}>
+        <div className={commonStyles.buttonContainer}>
           <div className={styles.buttonarea}>
-            <button className={styles.button} onClick={handleNew}>
+            <button className={commonStyles.button} onClick={handleNew}>
               新規作成
             </button>
           </div>

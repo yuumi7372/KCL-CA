@@ -232,9 +232,9 @@ const handleDelete = async (item: InventoryItem) => {
       <div className={commonStyles.container}>
         <h1 className={commonStyles.title}>こっこふぁくとりー/在庫</h1>
         <p className={commonStyles.infoBox}>登録された在庫情報を表示します。在庫の新規作成は「新規作成」ボタンを押してください。黄色の背景は在庫数が基準値を下回っていることを示します。</p>
-        <div className={styles.buttonContainer}>
+        <div className={commonStyles.buttonContainer}>
           <div className={styles.buttonarea}>
-            <button className={styles.button} onClick={handleNew}>
+            <button className={commonStyles.button} onClick={handleNew}>
               新規作成
             </button>
           </div>
